@@ -1,0 +1,28 @@
+// import Vue from "vue";
+import { createApp } from "vue";
+import App from "./App.vue";
+import router from "./router";
+import store from "./store";
+// import Vue2Editor from "vue2-editor";
+import { QuillEditor } from "@vueup/vue-quill";
+// // import "@vueup/vue-quill/dist/vue-quill.snow.css";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
+// import { create } from "core-js/core/object";
+
+// Vue.use(QuillEditor);
+
+// Vue.config.productionTip = false;
+
+// new Vue({
+//   router,
+//   store,
+//   render: (h) => h(App),
+// }).$mount("#app");
+// createApp(App).use(store).use(router).use(QuillEditor).mount("#app");
+
+//from vue2 to vue3, use createApp instead of new Vue
+const app = createApp(App);
+app.component("QuillEditor", QuillEditor);
+app.use(store);
+app.use(router);
+app.mount("#app");
