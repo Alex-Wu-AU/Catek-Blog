@@ -11,6 +11,7 @@
 <script>
 import Nagivation from "./components/Navigation";
 import Footer from "./components/Footer";
+import { getAuth } from "firebase/auth";
 export default {
   name: "app",
   components: { Nagivation, Footer },
@@ -22,6 +23,7 @@ export default {
 
   created() {
     this.checkRoute();
+    console.log(getAuth().currentUser);
   },
   mounted() {},
   methods: {

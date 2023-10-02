@@ -42,8 +42,9 @@
 import email from "../assets/svgComponents/Email.vue";
 import password from "../assets/svgComponents/Password.vue";
 import user from "../assets/svgComponents/User.vue";
-import firebase from "firebase/app";
-import "firebase/auth";
+// import firebase from "firebase/app";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 import db from "../firebase/firebaseInit";
 export default {
   name: "Register",
@@ -74,25 +75,33 @@ export default {
       ) {
         this.error = false;
         this.errorMsg = "";
-        const firebaseAuth = await firebase.auth();
-        const createUser = await firebaseAuth.createUserWithEmailAndPassword(
-          this.email,
-          this.password
-        );
-        const result = await createUser;
-        const dataBase = db.collection("users").doc(result.user.uid);
-        await dataBase.set({
-          firstName: this.firstName,
-          lastName: this.lastName,
-          username: this.username,
-          email: this.email,
-        });
-        this.$router.push({ name: "Home" });
+        try {
+          const createUser = await createUserWithEmailAndPassword(
+            getAuth(),
+            this.email,
+            this.password
+          );
+          const result = await createUser;
+          const firestore = getFirestore(db);
+          const uid = result.user.uid;
+          const userRef = doc(firestore, "users", uid);
+          await setDoc(userRef, {
+            firstName: this.firstName,
+            lastName: this.lastName,
+            username: this.username,
+            email: this.email,
+          });
+          this.$router.push({ name: "Home" });
+          return;
+        } catch (err) {
+          this.error = true;
+          this.errorMsg = err.message;
+        }
+      } else {
+        this.error = true;
+        this.errorMsg = "Please fill out all the fields!";
         return;
       }
-      this.error = true;
-      this.errorMsg = "Please fill out all the fields!";
-      return;
     },
   },
 };

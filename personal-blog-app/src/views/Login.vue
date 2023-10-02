@@ -22,8 +22,7 @@
       <router-link class="forgot-password" :to="{ name: 'ForgotPassword' }"
         >Forgot your password?</router-link
       >
-      <!-- <button @click.prevent="signIn">Sign In</button> -->
-      <button>Sign In</button>
+      <button @click.prevent="signIn">Sign In</button>
       <div class="angle"></div>
     </form>
     <div class="background"></div>
@@ -33,8 +32,8 @@
 <script>
 import email from "../assets/svgComponents/Email.vue";
 import password from "../assets/svgComponents/Password.vue";
-import firebase from "firebase/app";
-import "firebase/auth";
+import db from "../firebase/firebaseInit";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 export default {
   name: "Login",
   components: {
@@ -45,25 +44,23 @@ export default {
     return {
       email: "",
       password: "",
-      //   error: null,
-      //   errorMsg: "",
+      error: null,
+      errorMsg: "",
     };
   },
   methods: {
-    signIn() {
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(this.email, this.password)
-        .then(() => {
-          this.$router.push({ name: "Home" });
-          this.error = false;
-          this.errorMsg = "";
-          console.log(firebase.auth().currentUser.uid);
-        })
-        .catch((err) => {
-          this.error = true;
-          this.errorMsg = err.message;
-        });
+    async signIn() {
+      try {
+        const auth = getAuth(db);
+        await signInWithEmailAndPassword(auth, this.email, this.password);
+        this.$router.push({ name: "Home" });
+        this.error = false;
+        this.errorMsg = "";
+        console.log(auth.currentUser.uid);
+      } catch (err) {
+        this.error = true;
+        this.errorMsg = err.message;
+      }
     },
   },
 };

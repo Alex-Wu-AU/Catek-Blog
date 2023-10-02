@@ -7,22 +7,17 @@ import store from "./store";
 import { QuillEditor } from "@vueup/vue-quill";
 // // import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
-// import { create } from "core-js/core/object";
-
-// Vue.use(QuillEditor);
-
-// Vue.config.productionTip = false;
-
-// new Vue({
-//   router,
-//   store,
-//   render: (h) => h(App),
-// }).$mount("#app");
-// createApp(App).use(store).use(router).use(QuillEditor).mount("#app");
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 //from vue2 to vue3, use createApp instead of new Vue
-const app = createApp(App);
-app.component("QuillEditor", QuillEditor);
-app.use(store);
-app.use(router);
-app.mount("#app");
+
+let app;
+onAuthStateChanged(getAuth(), () => {
+  if (!app) {
+    app = createApp(App);
+    app.component("QuillEditor", QuillEditor);
+    app.use(store);
+    app.use(router);
+    app.mount("#app");
+  }
+});
