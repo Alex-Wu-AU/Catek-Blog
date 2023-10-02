@@ -163,8 +163,11 @@ header {
     }
   }
 
-  //transition animations
-  .mobile-nav-enter-active,
+  //transition animations using vue transition
+  .mobile-nav-enter-active {
+    transition: all 1s ease;
+  }
+
   .mobile-nav-leave-active {
     transition: all 1s ease;
   }

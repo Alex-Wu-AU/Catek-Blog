@@ -3,15 +3,17 @@
     <div class="app">
       <Nagivation />
       <router-view />
+      <Footer />
     </div>
   </div>
 </template>
 
 <script>
-import Nagivation from "./components/Navigation.vue";
+import Nagivation from "./components/Navigation";
+import Footer from "./components/Footer";
 export default {
   name: "app",
-  components: { Nagivation },
+  components: { Nagivation, Footer },
   data() {
     return {};
   },
