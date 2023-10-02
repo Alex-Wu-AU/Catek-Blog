@@ -18,15 +18,24 @@
         </div>
       </div>
     </div>
+    <div class="updates">
+      <div class="container">
+        <h2>never miss a post. Register for your free account today!</h2>
+        <router-link class="router-button" to="#">
+          Register for FireBlogs <Arrow class="arrow arrow-light" />
+        </router-link>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import BlogPost from "../components/BlogPost.vue";
 import BlogCard from "../components/BlogCard.vue";
+import Arrow from "../assets/svgComponents/Arrow.vue";
 export default {
   name: "Home",
-  components: { BlogPost, BlogCard },
+  components: { BlogPost, BlogCard, Arrow },
   data() {
     return {
       welcomeScreen: {
