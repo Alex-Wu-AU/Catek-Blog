@@ -1,7 +1,12 @@
 <template>
   <div class="reset-password">
-    <!-- <Modal v-if="modalActive" :modalMessage="modalMessage" v-on:close-modal="closeModal" />
-    <Loading v-if="loading" /> -->
+    <!-- v-on listens the emit from the child component -->
+    <Modal
+      v-if="modalActive"
+      :modalMessage="modalMessage"
+      v-on:close-modal="closeModal"
+    />
+    <!-- <Loading v-if="loading" /> -->
     <div class="form-wrap">
       <form class="reset">
         <!-- <p class="login-register">
@@ -29,6 +34,7 @@
 
 <script>
 import email from "../assets/svgComponents/Email.vue";
+import Modal from "../components/Modal.vue";
 // import Modal from "../components/Modal";
 // import Loading from "../components/Loading";
 // import firebase from "firebase/app";
@@ -38,14 +44,14 @@ export default {
   data() {
     return {
       email: "",
-      modalActive: false,
+      modalActive: true,
       modalMessage: "",
       loading: null,
     };
   },
   components: {
     email,
-    // Modal,
+    Modal,
     // Loading,
   },
   methods: {
@@ -66,10 +72,10 @@ export default {
     //       this.modalActive = true;
     //     });
     // },
-    // closeModal() {
-    //   this.modalActive = !this.modalActive;
-    //   this.email = "";
-    // },
+    closeModal() {
+      this.modalActive = !this.modalActive;
+      this.email = "";
+    },
   },
 };
 </script>
