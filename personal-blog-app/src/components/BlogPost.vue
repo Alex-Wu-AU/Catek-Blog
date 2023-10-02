@@ -11,14 +11,11 @@
         <p class="content-preview" v-else v-html="post.blogHTML"></p>
         <router-link class="link link-light" v-if="post.welcomeScreen" to="#">
           Login/Register
-          <img
-            src="../assets/Icons/arrow-right-light.svg"
-            class="arrow arrow-light"
-          />
+          <Arrow class="arrow arrow-light" />
         </router-link>
         <router-link class="link" v-else to="#">
           View The Post
-          <img src="../assets/Icons/arrow-right-light.svg" class="arrow" />
+          <Arrow class="arrow" />
         </router-link>
       </div>
     </div>
@@ -39,9 +36,13 @@
 </template>
 
 <script>
+import Arrow from "../assets/svgComponents/Arrow.vue";
 export default {
   name: "BlogPost",
   props: ["post"],
+  components: {
+    Arrow,
+  },
 };
 </script>
 
