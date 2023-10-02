@@ -80,7 +80,6 @@ export default {
           this.password
         );
         const result = await createUser;
-        //if not existed, create a new doc and assign new id
         const dataBase = db.collection("users").doc(result.user.uid);
         await dataBase.set({
           firstName: this.firstName,
@@ -88,36 +87,13 @@ export default {
           username: this.username,
           email: this.email,
         });
-        //return home page
         this.$router.push({ name: "Home" });
         return;
       }
-      this.error = false;
-      this.errorMsg = "Please fill out the fields";
+      this.error = true;
+      this.errorMsg = "Please fill out all the fields!";
       return;
     },
-    //     this.error = false;
-    //     this.errorMsg = "";
-    //     const firebaseAuth = await firebase.auth();
-    //     const createUser = await firebaseAuth.createUserWithEmailAndPassword(
-    //       this.email,
-    //       this.password
-    //     );
-    //     const result = await createUser;
-    //     const dataBase = db.collection("users").doc(result.user.uid);
-    //     await dataBase.set({
-    //       firstName: this.firstName,
-    //       lastName: this.lastName,
-    //       username: this.username,
-    //       email: this.email,
-    //     });
-    //     this.$router.push({ name: "Home" });
-    //     return;
-    //   }
-    //   this.error = true;
-    //   this.errorMsg = "Please fill out all the fields!";
-    //   return;
-    // },
   },
 };
 </script>
