@@ -42,9 +42,9 @@
 import email from "../assets/svgComponents/Email.vue";
 import password from "../assets/svgComponents/Password.vue";
 import user from "../assets/svgComponents/User.vue";
-// import firebase from "firebase/app";
-// import "firebase/auth";
-// import db from "../firebase/firebaseInit";
+import firebase from "firebase/app";
+import "firebase/auth";
+import db from "../firebase/firebaseInit";
 export default {
   name: "Register",
   components: {
@@ -64,14 +64,38 @@ export default {
     };
   },
   methods: {
-    // async register() {
-    //   if (
-    //     this.email !== "" &&
-    //     this.password !== "" &&
-    //     this.firstName !== "" &&
-    //     this.lastName !== "" &&
-    //     this.username !== ""
-    //   ) {
+    async register() {
+      if (
+        this.email !== "" &&
+        this.password !== "" &&
+        this.firstName !== "" &&
+        this.lastName !== "" &&
+        this.username !== ""
+      ) {
+        this.error = false;
+        this.errorMsg = "";
+        const firebaseAuth = await firebase.auth();
+        const createUser = await firebaseAuth.createUserWithEmailAndPassword(
+          this.email,
+          this.password
+        );
+        const result = await createUser;
+        //if not existed, create a new doc and assign new id
+        const dataBase = db.collection("users").doc(result.user.uid);
+        await dataBase.set({
+          firstName: this.firstName,
+          lastName: this.lastName,
+          username: this.username,
+          email: this.email,
+        });
+        //return home page
+        this.$router.push({ name: "Home" });
+        return;
+      }
+      this.error = false;
+      this.errorMsg = "Please fill out the fields";
+      return;
+    },
     //     this.error = false;
     //     this.errorMsg = "";
     //     const firebaseAuth = await firebase.auth();
