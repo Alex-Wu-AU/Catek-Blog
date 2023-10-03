@@ -4,7 +4,13 @@ import { createStore } from "vuex";
 // import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getAuth } from "firebase/auth";
 import db from "../firebase/firebaseInit";
-import { getFirestore, doc, collection, getDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  collection,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 // import { doc } from "firebase/firestore";
 // import { get } from "core-js/core/dict";
 
@@ -67,6 +73,17 @@ export default createStore({
         state.profileFirstName.match(/(\b\S)?/g).join("") +
         state.profileLastName.match(/(\b\S)?/g).join("");
     },
+
+    //change profile info
+    changeFirstName(state, payload) {
+      state.profileFirstName = payload;
+    },
+    changeLastName(state, payload) {
+      state.profileLastName = payload;
+    },
+    changeUsername(state, payload) {
+      state.profileUsername = payload;
+    },
   },
   actions: {
     //get current user, only change user state by commit
@@ -82,6 +99,19 @@ export default createStore({
       // const token = await user.getIdTokenResult();
       // const admin = await token.claims.admin;
       // commit("setProfileAdmin", admin);
+    },
+
+    //updates the user profile
+    async updateUserSettings({ commit, state }) {
+      const firestore = getFirestore(db);
+      const collectionRef = collection(firestore, "users");
+      const docRef = await doc(collectionRef, state.profileId);
+      await updateDoc(docRef, {
+        firstName: state.profileFirstName,
+        lastName: state.profileLastName,
+        username: state.profileUsername,
+      });
+      commit("setProfileInitials"); //update initials
     },
   },
   modules: {},
