@@ -4,6 +4,7 @@ import { serverTimestamp } from "firebase/firestore";
 // import firebase from "firebase/app";
 // import "firebase/firestore";
 
+//Firebase configuration
 var firebaseConfig = {
   apiKey: "AIzaSyC5_p9wL-kvDCBTYHmDirniJUne8Kj5mz0",
   authDomain: "personalblogvue3.firebaseapp.com",

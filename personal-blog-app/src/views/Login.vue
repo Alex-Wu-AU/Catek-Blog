@@ -59,7 +59,7 @@ export default {
         console.log(auth.currentUser.uid);
       } catch (err) {
         this.error = true;
-        this.errorMsg = err.message;
+        this.errorMsg = err.message; //err.message prints the error message provided by firebase
       }
     },
   },

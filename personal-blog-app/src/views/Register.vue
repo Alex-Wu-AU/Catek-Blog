@@ -85,6 +85,7 @@ export default {
           const firestore = getFirestore(db);
           const uid = result.user.uid;
           const userRef = doc(firestore, "users", uid);
+          //setDoc methods stores the data to the firestore database
           await setDoc(userRef, {
             firstName: this.firstName,
             lastName: this.lastName,
