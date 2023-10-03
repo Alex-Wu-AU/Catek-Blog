@@ -1,6 +1,6 @@
 <template>
   <!-- a user is loggedin or not -->
-  <div class="blog-wrapper no-user">
+  <div class="blog-wrapper" :class="{ 'no-user': !user }">
     <div class="blog-content">
       <!-- use v-if to render different type of content: welcome/post -->
       <div>
@@ -42,6 +42,14 @@ export default {
   props: ["post"],
   components: {
     Arrow,
+  },
+  computed: {
+    user() {
+      return this.$store.state.user;
+    },
+    // admin() {
+    //   return this.$store.state.profileAdmin;
+    // },
   },
 };
 </script>
@@ -156,6 +164,7 @@ export default {
   }
 }
 
+//controls the background color of the first child if there is no user (set welcome to grey)
 .no-user:first-child {
   .blog-content {
     background-color: #303030;

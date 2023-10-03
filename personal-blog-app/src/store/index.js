@@ -36,7 +36,7 @@ export default createStore({
     ],
     editPost: null,
     //use state to control the access to admin previleges
-    user: null,
+    user: null, //if user is logged in, user will be an object, otherwise null
     profileEmail: null,
     profileFirstName: null,
     profileLastName: null,

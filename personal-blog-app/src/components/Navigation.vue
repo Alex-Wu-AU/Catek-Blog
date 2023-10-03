@@ -14,12 +14,18 @@
           <router-link class="link" :to="{ name: 'Home' }">Home</router-link>
           <router-link class="link" :to="{ name: 'Blogs' }">Blogs</router-link>
           <router-link class="link" to="#">Create Post</router-link>
-          <router-link class="link" :to="{ name: 'Login' }"
+          <!-- login not shown if user is logged in -->
+          <router-link v-if="!user" class="link" :to="{ name: 'Login' }"
             >Login/Register</router-link
           >
         </ul>
         <!-- the profile menu -->
-        <div @click="toggleProfileMenu" class="profile" ref="profile">
+        <div
+          v-if="user"
+          @click="toggleProfileMenu"
+          class="profile"
+          ref="profile"
+        >
           <span>{{ this.$store.state.profileInitials }}</span>
           <div v-show="profileMenu" class="profile-menu">
             <!-- profile info -->
@@ -42,12 +48,14 @@
                   <p>Profile</p>
                 </router-link>
               </div>
+
               <div class="option">
                 <router-link class="option" to="#">
                   <adminIcon class="icon" />
                   <p>Admin</p>
                 </router-link>
               </div>
+
               <div @click="signOut" class="option">
                 <signOutIcon class="icon" />
                 <p>Sign Out</p>
@@ -74,7 +82,9 @@
         <router-link class="link" :to="{ name: 'Home' }">Home</router-link>
         <router-link class="link" :to="{ name: 'Blogs' }">Blogs</router-link>
         <router-link class="link" to="#">Create Post</router-link>
-        <router-link class="link" to="#">Login/Register</router-link>
+        <router-link class="link" v-if="!user" :to="{ name: 'Login' }"
+          >Login/Register</router-link
+        >
       </ul>
     </transition>
   </header>
@@ -87,6 +97,7 @@
 import userIcon from "../assets/svgComponents/userIcon.vue";
 import adminIcon from "../assets/svgComponents/adminIcon.vue";
 import signOutIcon from "../assets/svgComponents/signOutIcon.vue";
+import { getAuth, signOut } from "firebase/auth";
 
 export default {
   name: "navigation",
@@ -134,6 +145,19 @@ export default {
         this.profileMenu = !this.profileMenu;
       }
     },
+    //sign out the current user
+    signOut() {
+      signOut(getAuth());
+      window.location.reload();
+    },
+  },
+  computed: {
+    user() {
+      return this.$store.state.user;
+    },
+    // admin() {
+    //   return this.$store.state.profileAdmin;
+    // },
   },
 };
 </script>
