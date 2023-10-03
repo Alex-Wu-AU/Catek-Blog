@@ -23,7 +23,17 @@ export default {
 
   created() {
     this.checkRoute();
-    console.log(getAuth().currentUser);
+    //listen to auth state changes
+
+    getAuth().onAuthStateChanged((user) => {
+      this.$store.commit("updateUser", user);
+      if (user) {
+        // console.log(user.uid);
+        this.$store.dispatch("getCurrentUser", user);
+        console.log(this.$store.state.profileEmail);
+      }
+    });
+    // console.log(getAuth().currentUser);
   },
   mounted() {},
   methods: {
