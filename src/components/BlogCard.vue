@@ -8,10 +8,7 @@
         <Delete class="delete" />
       </div>
     </div>
-    <img
-      :src="require(`../assets/blogCards/${post.blogCoverPhoto}.jpg`)"
-      alt=""
-    />
+    <img :src="post.blogCoverPhoto" alt="" />
     <div class="info">
       <h4>{{ post.blogTitle }}</h4>
       <h6>

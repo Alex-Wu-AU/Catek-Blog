@@ -60,6 +60,15 @@ export default createStore({
     profileId: null, //the uid created by firebase
     profileInitials: null,
   },
+
+  getters: {
+    blogPostsFeed(state) {
+      return state.blogPosts.slice(0, 2); //2 newset blog posts to show in home
+    },
+    blogPostsCards(state) {
+      return state.blogPosts.slice(2, 6); //next 4 blog posts to show in home small blog cards
+    },
+  },
   mutations: {
     newBlogPost(state, payload) {
       state.blogHTML = payload;

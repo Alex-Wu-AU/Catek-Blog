@@ -3,7 +3,7 @@
     <BlogPost v-if="!user" :post="welcomeScreen" />
     <BlogPost
       :post="post"
-      v-for="(post, index) in sampleBlogPost"
+      v-for="(post, index) in blogPostsFeed"
       :key="index"
     />
     <div class="blog-card-wrap">
@@ -12,7 +12,7 @@
         <div class="blog-cards">
           <BlogCard
             :post="post"
-            v-for="(post, index) in sampleBlogCards"
+            v-for="(post, index) in blogPostsCards"
             :key="index"
           />
         </div>
@@ -45,29 +45,16 @@ export default {
         welcomeScreen: true,
         photo: "coding",
       },
-      sampleBlogPost: [
-        {
-          title: "Blog Post 1",
-          blogPost:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
-          blogCoverPhoto: "beautiful-stories",
-        },
-        {
-          title: "Blog Post 2",
-          blogPost:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
-          blogCoverPhoto: "designed-for-everyone",
-        },
-      ],
     };
   },
   computed: {
-    //     blogPostsFeed() {
-    //   return this.$store.getters.blogPostsFeed;
-    // },
-    sampleBlogCards() {
-      return this.$store.state.sampleBlogCards;
+    blogPostsFeed() {
+      return this.$store.getters.blogPostsFeed;
     },
+    blogPostsCards() {
+      return this.$store.getters.blogPostsCards;
+    },
+
     user() {
       return this.$store.state.user;
     },
