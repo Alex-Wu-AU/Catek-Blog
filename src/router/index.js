@@ -98,6 +98,7 @@ const routes = [
     },
   },
   {
+    //each path will use blogid as a parameter
     path: "/view-blog/:blogid",
     name: "ViewBlog",
     component: ViewBlog,

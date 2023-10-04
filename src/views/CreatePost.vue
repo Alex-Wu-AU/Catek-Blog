@@ -168,30 +168,33 @@ export default {
               console.log(error);
               this.loading = false;
             },
-            () => {
+            async () => {
               // Handle successful uploads on complete
               // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-              getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                console.log("File available at", downloadURL);
-                const timestamp = Timestamp.now().toDate();
-                console.log(timestamp);
-                const dataBase = collection(getFirestore(db), "blogPosts");
-                const docRef = doc(dataBase);
-                setDoc(docRef, {
-                  blogID: docRef.id,
-                  blogHTML: this.blogHTML,
-                  blogCoverPhoto: downloadURL,
-                  blogCoverPhotoName: this.blogCoverPhotoName,
-                  blogTitle: this.blogTitle,
-                  profileId: this.profileId, //the user who post the blog
-                  date: timestamp,
-                });
-                this.loading = false;
-                this.$router.push({
-                  name: "ViewBlog",
-                  params: { blogid: docRef.id },
-                });
-              });
+              await getDownloadURL(uploadTask.snapshot.ref).then(
+                async (downloadURL) => {
+                  console.log("File available at", downloadURL);
+                  const timestamp = Timestamp.now().toDate();
+                  console.log(timestamp);
+                  const dataBase = collection(getFirestore(db), "blogPosts");
+                  const docRef = doc(dataBase);
+                  await setDoc(docRef, {
+                    blogID: docRef.id,
+                    blogHTML: this.blogHTML,
+                    blogCoverPhoto: downloadURL,
+                    blogCoverPhotoName: this.blogCoverPhotoName,
+                    blogTitle: this.blogTitle,
+                    profileId: this.profileId, //the user who post the blog
+                    date: timestamp,
+                  });
+                  await this.$store.dispatch("getPost");
+                  this.loading = false;
+                  this.$router.push({
+                    name: "ViewBlog",
+                    params: { blogid: docRef.id },
+                  });
+                }
+              );
             }
           );
           return;
