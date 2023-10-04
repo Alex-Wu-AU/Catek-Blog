@@ -60,8 +60,9 @@ import db from "../firebase/firebaseInit";
 import {
   getFirestore,
   collection,
-  addDoc, //add a new document to a collection and assign it a document ID automatically
+  setDoc,
   Timestamp,
+  doc,
 } from "firebase/firestore";
 import BlogCoverPreview from "../components/BlogCoverPreview.vue";
 import Loading from "../components/Loading.vue";
@@ -174,10 +175,10 @@ export default {
                 console.log("File available at", downloadURL);
                 const timestamp = Timestamp.now().toDate();
                 console.log(timestamp);
-                console.log("timestamp");
                 const dataBase = collection(getFirestore(db), "blogPosts");
-                addDoc(dataBase, {
-                  blogID: dataBase.id,
+                const docRef = doc(dataBase);
+                setDoc(docRef, {
+                  blogID: docRef.id,
                   blogHTML: this.blogHTML,
                   blogCoverPhoto: downloadURL,
                   blogCoverPhotoName: this.blogCoverPhotoName,
@@ -188,7 +189,7 @@ export default {
                 this.loading = false;
                 this.$router.push({
                   name: "ViewBlog",
-                  params: { blogid: dataBase.id },
+                  params: { blogid: docRef.id },
                 });
               });
             }

@@ -33,7 +33,8 @@ export default {
         console.log(this.$store.state.profileEmail);
       }
     });
-    // console.log(getAuth().currentUser);
+    // for testing: console.log(getAuth().currentUser);
+    this.$store.dispatch("getPost");
   },
   mounted() {},
   methods: {

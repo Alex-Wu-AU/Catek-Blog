@@ -1,7 +1,6 @@
 // import Vue from 'vue'
 // import Vuex from 'vuex'
 import { createStore } from "vuex";
-// import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getAuth } from "firebase/auth";
 import db from "../firebase/firebaseInit";
 import {
@@ -10,9 +9,10 @@ import {
   collection,
   getDoc,
   updateDoc,
+  query,
+  orderBy,
+  getDocs,
 } from "firebase/firestore";
-// import { doc } from "firebase/firestore";
-// import { get } from "core-js/core/dict";
 
 // Vue.use(Vuex)
 
@@ -41,8 +41,8 @@ export default createStore({
       },
     ],
     //blog post states
-    // blogPosts: [],
-    // postLoaded: null,
+    blogPosts: [],
+    postLoaded: null,
     blogHTML: "Write your blog title here...",
     blogTitle: "",
     blogPhotoName: "",
@@ -146,6 +146,28 @@ export default createStore({
         username: state.profileUsername,
       });
       commit("setProfileInitials"); //update initials
+    },
+
+    async getPost({ state }) {
+      const dataBase = await collection(getFirestore(db), "blogPosts");
+      const q = query(dataBase, orderBy("date", "desc"));
+      const dbResults = await getDocs(q);
+      dbResults.forEach((doc) => {
+        //the if filter make sure the same blog won't be added twice
+        if (!state.blogPosts.some((post) => post.blogID === doc.id)) {
+          const data = {
+            blogID: doc.data().blogID,
+            blogHTML: doc.data().blogHTML,
+            blogCoverPhoto: doc.data().blogCoverPhoto,
+            blogTitle: doc.data().blogTitle,
+            blogDate: doc.data().date,
+            blogCoverPhotoName: doc.data().blogCoverPhotoName,
+          };
+          state.blogPosts.push(data); //push the data to the blogPosts array
+        }
+      });
+      state.postLoaded = true;
+      console.log(state.blogPosts);
     },
   },
   modules: {},
