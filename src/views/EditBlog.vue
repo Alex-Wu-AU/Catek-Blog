@@ -57,14 +57,7 @@ import {
   uploadBytesResumable, //upload the file to firebase storage with ability to control upload process
 } from "firebase/storage";
 import db from "../firebase/firebaseInit";
-import {
-  getFirestore,
-  collection,
-  setDoc,
-  Timestamp,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
+import { getFirestore, collection, doc, updateDoc } from "firebase/firestore";
 import BlogCoverPreview from "../components/BlogCoverPreview.vue";
 import Loading from "../components/Loading.vue";
 import Quill from "quill";
@@ -188,24 +181,19 @@ export default {
               await getDownloadURL(uploadTask.snapshot.ref).then(
                 async (downloadURL) => {
                   console.log("File available at", downloadURL);
-                  const timestamp = Timestamp.now().toDate();
-                  console.log(timestamp);
-                  const dataBase = collection(getFirestore(db), "blogPosts");
-                  const docRef = doc(dataBase);
-                  await setDoc(docRef, {
-                    blogID: docRef.id,
+
+                  // const docRef = doc(dataBase);
+                  await updateDoc(dataBase, {
                     blogHTML: this.blogHTML,
                     blogCoverPhoto: downloadURL,
                     blogCoverPhotoName: this.blogCoverPhotoName,
                     blogTitle: this.blogTitle,
-                    profileId: this.profileId, //the user who post the blog
-                    date: timestamp,
                   });
-                  await this.$store.dispatch("getPost");
+                  await this.$store.dispatch("updatePost", this.routeID);
                   this.loading = false;
                   this.$router.push({
                     name: "ViewBlog",
-                    params: { blogid: docRef.id },
+                    params: { blogid: dataBase.id },
                   });
                 }
               );
@@ -225,6 +213,7 @@ export default {
           name: "ViewBlog",
           params: { blogid: this.routeID },
         });
+        return;
       }
       this.error = true;
       this.errorMsg = "Please ensure Blog Title & Blog Post has been filled!";
