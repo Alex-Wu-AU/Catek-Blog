@@ -40,6 +40,15 @@ export default createStore({
         blogDate: "Sept 1, 2023",
       },
     ],
+    //blog post states
+    // blogPosts: [],
+    // postLoaded: null,
+    blogHTML: "Write your blog title here...",
+    blogTitle: "",
+    blogPhotoName: "",
+    blogPhotoFileURL: null,
+    blogPhotoPreview: null,
+
     editPost: null,
     //use state to control the access to admin previleges
     user: null, //if user is logged in, user will be an object, otherwise null
