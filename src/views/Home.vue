@@ -41,7 +41,7 @@ export default {
       welcomeScreen: {
         title: "Welcome!",
         blogPost:
-          "Weekly blog articles with all things programming including HTML, CSS, JavaScript and more. Register today to never miss a post!",
+          "This is a blog site that allows users to create an account, login, and create blog posts. This site is built with Vue3 and Firebase.",
         welcomeScreen: true,
         photo: "coding",
       },
