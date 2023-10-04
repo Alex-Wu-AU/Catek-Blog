@@ -20,9 +20,6 @@
 </template>
 
 <script>
-// import firebase from "firebase/app";
-// import "firebase/functions";
-// import db from "../firebase/firebaseInit";
 import { getFunctions, httpsCallable } from "firebase/functions";
 export default {
   name: "Admin",

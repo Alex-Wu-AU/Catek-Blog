@@ -48,8 +48,20 @@
 </template>
 
 <script>
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-// import db from "../firebase/firebaseInit";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  uploadBytesResumable,
+} from "firebase/storage";
+import db from "../firebase/firebaseInit";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  Timestamp,
+} from "firebase/firestore";
 import BlogCoverPreview from "../components/BlogCoverPreview.vue";
 import Quill from "quill";
 window.Quill = Quill;
@@ -76,14 +88,24 @@ export default {
   },
   methods: {
     fileChange() {
-      this.file = this.$refs.blogPhoto.files[0];
-      const fileName = this.file.name;
-      this.$store.commit("fileNameChange", fileName);
-      this.$store.commit("createFileURL", URL.createObjectURL(this.file));
+      // Check if a file was selected
+      if (this.$refs.blogPhoto.files.length > 0) {
+        this.file = this.$refs.blogPhoto.files[0];
+        const fileName = this.file.name;
+        this.$store.commit("fileNameChange", fileName);
+        this.$store.commit("createFileURL", URL.createObjectURL(this.file));
+      } else {
+        // Handle the case where no file was selected
+        // You can display an error message or take appropriate action
+        console.error("No file selected");
+      }
     },
+
     openPreview() {
       this.$store.commit("openPhotoPreview");
     },
+
+    //custom image handler
     async imageHandler(file, Editor, cursorLocation, resetUploader) {
       const storage = getStorage();
       const storageRef = ref(storage, `documents/blogPostPhotos/${file.name}`);
@@ -104,6 +126,77 @@ export default {
         // Handle errors
         console.error("Error uploading image", error);
       }
+    },
+
+    //upload the blog to the database
+    uploadBlog() {
+      if (this.blogTitle.length !== 0 && this.blogHTML.length !== 0) {
+        if (this.file) {
+          //see if the user has uploaded a cover photo
+          const storage = getStorage();
+          const storageRef = ref(
+            storage,
+            `documents/blogCoverPhotos/${this.$store.state.blogPhotoName}`
+          );
+
+          const uploadTask = uploadBytesResumable(storageRef, this.file);
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              // Observe state change events such as progress, pause, and resume
+              // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+              const progress =
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log("Upload is " + progress + "% done");
+              switch (snapshot.state) {
+                case "paused":
+                  console.log("Upload is paused");
+                  break;
+                case "running":
+                  console.log("Upload is running");
+                  break;
+              }
+            },
+            (error) => {
+              // Handle unsuccessful uploads
+              console.log(error);
+            },
+            () => {
+              // Handle successful uploads on complete
+              // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+              getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                console.log("File available at", downloadURL);
+                const timestamp = Timestamp.now().toDate();
+                console.log(timestamp);
+                console.log("timestamp");
+                const dataBase = collection(getFirestore(db), "blogPosts");
+                addDoc(dataBase, {
+                  blogID: dataBase.id,
+                  blogHTML: this.blogHTML,
+                  blogCoverPhoto: downloadURL,
+                  blogCoverPhotoName: this.blogCoverPhotoName,
+                  blogTitle: this.blogTitle,
+                  profileId: this.profileId, //the user who post the blog
+                  date: timestamp,
+                });
+              });
+            }
+          );
+          return;
+        }
+        this.error = true;
+        this.errorMsg = "Please ensure you uploaded a cover photo!";
+        setTimeout(() => {
+          this.error = false;
+        }, 5000);
+        return;
+      }
+      this.error = true;
+      this.errorMsg = "Please ensure Blog Title & Blog Post has been filled!";
+      setTimeout(() => {
+        this.error = false;
+      }, 5000);
+      return;
     },
   },
   computed: {
