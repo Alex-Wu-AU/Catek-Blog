@@ -78,6 +78,14 @@ export default createStore({
         (post) => post.blogID !== payload
       );
     },
+    //edit post
+    setBlogState(state, payload) {
+      state.blogTitle = payload.blogTitle;
+      state.blogHTML = payload.blogHTML;
+      state.blogPhotoFileURL = payload.blogCoverPhoto;
+      state.blogPhotoName = payload.blogCoverPhotoName;
+    },
+
     updateUser(state, payload) {
       state.user = payload;
     },
@@ -163,6 +171,11 @@ export default createStore({
       });
       state.postLoaded = true;
       console.log(state.blogPosts);
+    },
+
+    async updatePost({ commit, dispatch }, payload) {
+      commit("filterBlogPost", payload);
+      await dispatch("getPost");
     },
 
     async deletePost({ commit }, payload) {
