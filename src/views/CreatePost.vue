@@ -1,5 +1,6 @@
 <template>
   <div class="create-post">
+    <BlogCoverPreview v-show="this.$store.state.blogPhotoPreview" />
     <div class="container">
       <div :class="{ invisible: !error }" class="err-message">
         <p><span>Error:</span>{{ this.errorMsg }}</p>
@@ -28,7 +29,7 @@
         </div>
       </div>
       <div class="editor">
-        <QuillEditor
+        <vue-editor
           :editorOptions="editorSettings"
           v-model="blogHTML"
           useCustomImageHandler
@@ -42,10 +43,12 @@
       </div>
     </div>
   </div>
-  <!-- <QuillEditor :modules="modules" /> -->
 </template>
 
 <script>
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+// import db from "../firebase/firebaseInit";
+import BlogCoverPreview from "../components/BlogCoverPreview.vue";
 import Quill from "quill";
 window.Quill = Quill;
 const ImageResize = require("quill-image-resize-module").default;
@@ -53,6 +56,9 @@ Quill.register("modules/imageResize", ImageResize);
 
 export default {
   name: "CreatePost",
+  components: {
+    BlogCoverPreview,
+  },
   data() {
     return {
       file: null,
@@ -65,6 +71,62 @@ export default {
         },
       },
     };
+  },
+  methods: {
+    fileChange() {
+      this.file = this.$refs.blogPhoto.files[0];
+      const fileName = this.file.name;
+      this.$store.commit("fileNameChange", fileName);
+      this.$store.commit("createFileURL", URL.createObjectURL(this.file));
+    },
+    openPreview() {
+      this.$store.commit("openPhotoPreview");
+    },
+    async imageHandler(file, Editor, cursorLocation, resetUploader) {
+      const storage = getStorage();
+      const storageRef = ref(storage, `documents/blogPostPhotos/${file.name}`);
+
+      console.log("Running image handler");
+
+      try {
+        // Upload the file to Firebase Storage
+        await uploadBytes(storageRef, file);
+
+        // Get the download URL of the uploaded file
+        const downloadURL = await getDownloadURL(storageRef);
+
+        // Insert the image into the Quill Editor
+        Editor.insertEmbed(cursorLocation, "image", downloadURL);
+        resetUploader();
+      } catch (error) {
+        // Handle errors
+        console.error("Error uploading image", error);
+      }
+    },
+  },
+  computed: {
+    profileId() {
+      return this.$store.state.profileId;
+    },
+    blogCoverPhotoName() {
+      return this.$store.state.blogPhotoName;
+    },
+    blogTitle: {
+      get() {
+        return this.$store.state.blogTitle;
+      },
+      set(payload) {
+        this.$store.commit("updateBlogTitle", payload);
+      },
+    },
+    blogHTML: {
+      get() {
+        return this.$store.state.blogHTML;
+      },
+      set(payload) {
+        this.$store.commit("newBlogPost", payload);
+      },
+    },
   },
 };
 </script>
