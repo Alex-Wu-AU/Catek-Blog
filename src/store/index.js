@@ -12,6 +12,7 @@ import {
   query,
   orderBy,
   getDocs,
+  deleteDoc,
 } from "firebase/firestore";
 
 // Vue.use(Vuex)
@@ -69,6 +70,13 @@ export default createStore({
     toggleEditPost(state, payload) {
       state.editPost = payload;
       console.log(state.editPost);
+    },
+    //hide the deleted post before refreshing
+    filterBlogPost(state, payload) {
+      state.blogPosts = state.blogPosts.filter(
+        //recreates the array without the deleted post
+        (post) => post.blogID !== payload
+      );
     },
     updateUser(state, payload) {
       state.user = payload;
@@ -155,6 +163,15 @@ export default createStore({
       });
       state.postLoaded = true;
       console.log(state.blogPosts);
+    },
+
+    async deletePost({ commit }, payload) {
+      const getPost = await doc(
+        collection(getFirestore(db), "blogPosts"),
+        payload
+      );
+      await deleteDoc(getPost);
+      commit("filterBlogPost", payload); //the user doesn/t have to refresh to see its been deleted
     },
   },
   modules: {},

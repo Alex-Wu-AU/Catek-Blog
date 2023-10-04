@@ -31,9 +31,7 @@
 import Arrow from "../assets/svgComponents/Arrow.vue";
 import Delete from "../assets/svgComponents/Delete.vue";
 import Edit from "../assets/svgComponents/Edit.vue";
-// import Arrow from "../assets/Icons/arrow-right-light.svg";
-// import Edit from "../assets/Icons/edit-regular.svg";
-// import Delete from "../assets/Icons/trash-regular.svg";
+
 export default {
   name: "blogCard",
   props: ["post"],
