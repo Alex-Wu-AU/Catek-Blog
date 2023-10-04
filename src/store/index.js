@@ -43,6 +43,7 @@ export default createStore({
     editPost: null,
     //use state to control the access to admin previleges
     user: null, //if user is logged in, user will be an object, otherwise null
+    profileAdim: null,
     profileEmail: null,
     profileFirstName: null,
     profileLastName: null,
@@ -58,6 +59,12 @@ export default createStore({
     updateUser(state, payload) {
       state.user = payload;
     },
+
+    setProfileAdmin(state, payload) {
+      state.profileAdmin = payload;
+      console.log(state.profileAdmin);
+    },
+
     //doc is dbResults in getCurrentUser
     setProfileInfo(state, doc) {
       state.profileId = doc.id;
@@ -87,7 +94,7 @@ export default createStore({
   },
   actions: {
     //get current user, only change user state by commit
-    async getCurrentUser({ commit }) {
+    async getCurrentUser({ commit }, user) {
       const firestore = getFirestore(db);
       const collectionRef = collection(firestore, "users");
       const dataBase = await doc(collectionRef, getAuth().currentUser.uid);
@@ -96,9 +103,9 @@ export default createStore({
       commit("setProfileInfo", dbResults); //update result by mutation
       commit("setProfileInitials");
       console.log(dbResults); //only use when testing if the user is logged in
-      // const token = await user.getIdTokenResult();
-      // const admin = await token.claims.admin;
-      // commit("setProfileAdmin", admin);
+      const token = await user.getIdTokenResult();
+      const admin = await token.claims.admin;
+      commit("setProfileAdmin", admin); //use mutation to change admin status
     },
 
     //updates the user profile
