@@ -1,6 +1,7 @@
 <template>
   <div class="create-post">
     <BlogCoverPreview v-show="this.$store.state.blogPhotoPreview" />
+    <Loading v-show="loading" />
     <div class="container">
       <div :class="{ invisible: !error }" class="err-message">
         <p><span>Error:</span>{{ this.errorMsg }}</p>
@@ -51,18 +52,19 @@
 import {
   getStorage,
   ref,
-  uploadBytes,
+  uploadBytes, //upload the file to firebase storage
   getDownloadURL,
-  uploadBytesResumable,
+  uploadBytesResumable, //upload the file to firebase storage with ability to control upload process
 } from "firebase/storage";
 import db from "../firebase/firebaseInit";
 import {
   getFirestore,
   collection,
-  addDoc,
+  addDoc, //add a new document to a collection and assign it a document ID automatically
   Timestamp,
 } from "firebase/firestore";
 import BlogCoverPreview from "../components/BlogCoverPreview.vue";
+import Loading from "../components/Loading.vue";
 import Quill from "quill";
 window.Quill = Quill;
 const ImageResize = require("quill-image-resize-module").default;
@@ -72,6 +74,7 @@ export default {
   name: "CreatePost",
   components: {
     BlogCoverPreview,
+    Loading,
   },
   data() {
     return {
@@ -133,6 +136,8 @@ export default {
       if (this.blogTitle.length !== 0 && this.blogHTML.length !== 0) {
         if (this.file) {
           //see if the user has uploaded a cover photo
+          //while uploading, show the loading component
+          this.loading = true;
           const storage = getStorage();
           const storageRef = ref(
             storage,
@@ -160,6 +165,7 @@ export default {
             (error) => {
               // Handle unsuccessful uploads
               console.log(error);
+              this.loading = false;
             },
             () => {
               // Handle successful uploads on complete
@@ -178,6 +184,11 @@ export default {
                   blogTitle: this.blogTitle,
                   profileId: this.profileId, //the user who post the blog
                   date: timestamp,
+                });
+                this.loading = false;
+                this.$router.push({
+                  name: "ViewBlog",
+                  params: { blogid: dataBase.id },
                 });
               });
             }
