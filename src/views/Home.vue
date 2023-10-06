@@ -12,7 +12,7 @@
         <div class="blog-cards">
           <BlogCard
             :post="post"
-            v-for="(post, index) in blogPostsCards"
+            v-for="(post, index) in blogPosts"
             :key="index"
           />
         </div>
@@ -43,7 +43,7 @@ export default {
         blogPost:
           "This is a blog site that allows users to create an account, login, and create blog posts. This site is built with Vue3 and Firebase.",
         welcomeScreen: true,
-        photo: "coding",
+        photo: "welcome",
       },
     };
   },

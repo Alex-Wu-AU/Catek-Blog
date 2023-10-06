@@ -5,7 +5,7 @@
       <div class="branding">
         <!-- instead of looking for path, look for the name of the route -->
         <router-link class="header" :to="{ name: 'Home' }"
-          >FireBlogs</router-link
+          >CatekBlog</router-link
         >
       </div>
       <div class="nav-links">

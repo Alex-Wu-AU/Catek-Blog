@@ -4,7 +4,7 @@
       <div class="left">
         <div class="col-1">
           <router-link class="header" :to="{ name: 'Home' }"
-            >FireBlogs</router-link
+            >CatekBlog</router-link
           >
           <ul>
             <li>
